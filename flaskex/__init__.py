@@ -1,11 +1,19 @@
 from os import environ
 from logging import StreamHandler, INFO
 
-from flask import Flask as Flask_
+from flask import Flask as Flask_, g, request, Blueprint as Blueprint_
 from flask_debugtoolbar import DebugToolbarExtension
 from pyjade.ext.jinja import PyJadeExtension
+from facebook import parse_signed_request
 
-class Flask(Flask_):
+
+class ShortCuts(object):
+    def pgroute(self, *args, **kwargs):
+        kwargs['methods'] = ['GET', 'POST']
+        return self.route(*args, **kwargs)
+
+
+class Flask(ShortCuts, Flask_):
     def __init__(self, *args, **kwargs):
         super(Flask, self).__init__(*args, **kwargs)
         # regist jade
@@ -29,3 +37,21 @@ class Flask(Flask_):
             return True
         return super(Flask, self).select_jinja_autoescape(filename)
 
+
+# extra Features for Facebook
+class FlaskFacebook(Flask_):
+    def __init__(self, *args, **kwargs):
+        super(FlaskFacebook, self).__init__(*args, **kwargs)
+
+        @self.before_request
+        def _before_request():
+            signed_request = request.form.get('signed_request', None)
+            if signed_request:
+                g.signed_request = \
+                    parse_signed_request(
+                        signed_request, self.config['FACEBOOK_SECRET']
+                    )
+
+
+class Blueprint(ShortCuts, Blueprint_):
+    pass

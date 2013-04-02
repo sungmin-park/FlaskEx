@@ -5,7 +5,8 @@ setup(
     version='0.0.3',
     packages=['flaskex'],
     install_requires=[
-        'Flask', 'pyjade', 'pytz', 'iso8601', 'flask-debugtoolbar'
+        'Flask', 'pyjade', 'pytz', 'iso8601', 'flask-debugtoolbar',
+        'facebook-sdk'
     ],
     # supporting jinja autoescape
     dependency_links = [
