@@ -12,6 +12,7 @@ class Flask(Flask_):
         self.jinja_env.add_extension(PyJadeExtension)
         self.jinja_env.pyjade.options['pretty'] = 'JADE_PRETTY' in environ
         # hook config.from_object
+        # because some extra settings needs config
         _config_from_object = self.config.from_object
         def config_from_object(*args, **kwargs):
             _config_from_object(*args, **kwargs)
