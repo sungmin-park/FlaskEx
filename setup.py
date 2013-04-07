@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='FlaskEx',
-    version='0.0.4',
+    version='0.0.5',
     packages=['flaskex'],
     install_requires=[
         'Flask', 'pyjade', 'pytz', 'iso8601', 'flask-debugtoolbar',
