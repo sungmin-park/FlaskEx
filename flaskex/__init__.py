@@ -1,7 +1,10 @@
 from os import environ
 from logging import StreamHandler, INFO
+from functools import wraps
 
-from flask import Flask as Flask_, g, request, Blueprint as Blueprint_
+from flask import (
+    Flask as Flask_, g, request, Blueprint as Blueprint_, render_template
+)
 from flask_debugtoolbar import DebugToolbarExtension
 from pyjade.ext.jinja import PyJadeExtension
 from facebook import parse_signed_request
@@ -55,3 +58,25 @@ class FlaskFacebook(Flask_):
 
 class Blueprint(ShortCuts, Blueprint_):
     pass
+
+
+# http://flask.pocoo.org/docs/patterns/viewdecorators/#templating-decorator
+def templated(template_or_view_func):
+    # if arguments is function, act as calling with None template name
+    if hasattr(template_or_view_func, '__call__'):
+        return templated(None)(template_or_view_func)
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            template_name = template_or_view_func
+            if template_name is None:
+                template_name = request.endpoint \
+                    .replace('.', '/') + '.jade'
+            ctx = f(*args, **kwargs)
+            if ctx is None:
+                ctx = {}
+            elif not isinstance(ctx, dict):
+                return ctx
+            return render_template(template_name, **ctx)
+        return decorated_function
+    return decorator
