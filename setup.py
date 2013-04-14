@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='FlaskEx',
-    version='0.0.8',
+    version='0.0.9',
     packages=['flaskex'],
     zip_safe=False,
     install_requires=[
