@@ -1,13 +1,13 @@
-mixin csstag(name)
+mixin csstag(name, bp='')
   link(
-    rel='stylesheet', type="text/css", href=url_for('flaskex.static', filename=name)
+    rel='stylesheet', type="text/css", href=url_for(bp+'static', filename=name)
   )
 
-mixin jstag(name)
-  script(type='text/javascript', src=url_for('flaskex.static', filename=name))
+mixin jstag(name, bp='')
+  script(type='text/javascript', src=url_for(bp+'static', filename=name))
 
 mixin twitter_bootstrap_css()
-  +csstag('bootstrap/css/bootstrap.min.css')
+  +csstag('bootstrap/css/bootstrap.min.css', 'flaskex.')
 
 mixin twitter_bootstrap_js()
-  +jstag('bootstrap/js/bootstrap.min.js')
+  +jstag('bootstrap/js/bootstrap.min.js', 'flaskex.')
