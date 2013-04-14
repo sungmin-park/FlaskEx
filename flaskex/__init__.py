@@ -15,7 +15,8 @@ from facebook import parse_signed_request
 
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
- 
+
+
 def underscored(s):
     subbed = _underscorer1.sub(r'\1_\2', s)
     return _underscorer2.sub(r'\1_\2', subbed).lower()
@@ -36,6 +37,7 @@ class Flask(ShortCuts, flask.Flask):
         # hook config.from_object
         # because some extra settings needs config
         _config_from_object = self.config.from_object
+
         def config_from_object(*args, **kwargs):
             _config_from_object(*args, **kwargs)
             self.config['SQLALCHEMY_ECHO'] = 'SQLALCHEMY_ECHO' in environ
@@ -69,7 +71,23 @@ class FlaskFacebook(Flask):
 
 
 class Blueprint(ShortCuts, Blueprint_):
-    pass
+    def templated(self, template):
+        # if arguments is function, act as calling with None template name
+        if hasattr(template, '__call__'):
+            return self.templated(None)(template)
+
+        def _templated(f):
+            @wraps(f)
+            def decorator(*args, **kwargs):
+                ctx = f(*args, **kwargs)
+                if isinstance(ctx, dict):
+                    template_name = template
+                    if template_name is None:
+                        template_name = self.name + '/' + f.__name__ + '.jade'
+                    return render_template(template_name, **ctx)
+                return ctx
+            return decorator
+        return _templated
 
 
 # http://flask.pocoo.org/docs/patterns/viewdecorators/#templating-decorator
@@ -77,6 +95,7 @@ def templated(template_or_view_func):
     # if arguments is function, act as calling with None template name
     if hasattr(template_or_view_func, '__call__'):
         return templated(None)(template_or_view_func)
+
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -93,12 +112,15 @@ def templated(template_or_view_func):
         return decorated_function
     return decorator
 
+
 def url_for(*args, **kwargs):
     return flask.url_for(*args, **kwargs)
 
 # looks stupid, but it works...
 models = {}
 _BoundDeclarativeMeta = flask.ext.sqlalchemy._BoundDeclarativeMeta
+
+
 class BoundDeclarativeMeta(_BoundDeclarativeMeta):
     def __init__(cls, name, bases, d):
         super(BoundDeclarativeMeta, cls).__init__(name, bases, d)
@@ -107,9 +129,11 @@ class BoundDeclarativeMeta(_BoundDeclarativeMeta):
 # patch  _BoundDeclarativeMeta
 flask.ext.sqlalchemy._BoundDeclarativeMeta = BoundDeclarativeMeta
 
+
 class SQLAlchemy(SQLAlchemy):
     def __init__(self, app, *args, **kwargs):
         super(SQLAlchemy, self).__init__(app, *args, **kwargs)
+
         @app.url_value_preprocessor
         def model_preprocessor(endpoint, values):
             if values:
@@ -125,4 +149,3 @@ class SQLAlchemy(SQLAlchemy):
                         else:
                             value = model()
                         values[key] = value
-
