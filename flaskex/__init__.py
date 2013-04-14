@@ -13,6 +13,8 @@ from flask_debugtoolbar import DebugToolbarExtension
 from pyjade.ext.jinja import PyJadeExtension
 from facebook import parse_signed_request
 
+from ex import ex
+
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
 
@@ -34,6 +36,8 @@ class Flask(ShortCuts, flask.Flask):
         # regist jade
         self.jinja_env.add_extension(PyJadeExtension)
         self.jinja_env.pyjade.options['pretty'] = 'JADE_PRETTY' in environ
+        # redist external template
+        self.register_blueprint(ex)
         # hook config.from_object
         # because some extra settings needs config
         _config_from_object = self.config.from_object
