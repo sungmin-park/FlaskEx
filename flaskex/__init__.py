@@ -169,6 +169,10 @@ def utc_now():
 class PKMixin(object):
     id = Column(Integer, primary_key=True)
 
+    @property
+    def is_new(self):
+        return self.id is None
+
 
 class TimesMixin(object):
     created_at = Column(DateTime(True), default=utc_now)
