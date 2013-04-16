@@ -2,6 +2,7 @@ import re
 from os import environ
 from logging import StreamHandler, INFO
 from functools import wraps
+from datetime import datetime
 
 import flask
 from flask import (
@@ -12,6 +13,8 @@ import flask.ext.sqlalchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from pyjade.ext.jinja import PyJadeExtension
 from facebook import parse_signed_request
+from pytz import utc
+from sqlalchemy import Column, DateTime, Integer
 
 from ex import ex
 
@@ -155,3 +158,18 @@ class SQLAlchemy(SQLAlchemy):
                         else:
                             value = model()
                         values[key] = value
+
+
+def utc_now():
+    return datetime.utc_now().replace(tzinfo=utc)
+
+
+class PKMixin(object):
+    id = Column(Integer, primary_key=True)
+
+
+class TimesMixin(object):
+    created_at = Column(DateTime(True), default=utc_now)
+    updated_at = Column(
+        DateTime(True), default=utc_now, onupdate=utc_now
+    )
