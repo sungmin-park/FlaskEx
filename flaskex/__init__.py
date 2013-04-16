@@ -9,6 +9,7 @@ from flask import (
     g, request, Blueprint as Blueprint_, render_template,
 )
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext import wtf
 import flask.ext.sqlalchemy
 from flask_debugtoolbar import DebugToolbarExtension
 from pyjade.ext.jinja import PyJadeExtension
@@ -174,3 +175,7 @@ class TimesMixin(object):
     updated_at = Column(
         DateTime(True), default=utc_now, onupdate=utc_now
     )
+
+
+class Form(wtf.Form):
+    pass
