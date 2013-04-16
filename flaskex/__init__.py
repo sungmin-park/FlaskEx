@@ -45,6 +45,8 @@ class Flask(ShortCuts, flask.Flask):
         def config_from_object(*args, **kwargs):
             _config_from_object(*args, **kwargs)
             self.config['SQLALCHEMY_ECHO'] = 'SQLALCHEMY_ECHO' in environ
+            self.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = \
+                'DEBUG_TB_INTERCEPT_REDIRECTS' in environ
             if self.debug:
                 DebugToolbarExtension(self)
             else:
