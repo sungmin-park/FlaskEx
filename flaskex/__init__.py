@@ -157,7 +157,8 @@ class SQLAlchemy(SQLAlchemy):
                                 value = model.query.get_or_404(id)
                         else:
                             value = model()
-                        values[key] = value
+                        del values[key]
+                        values[model_name] = value
 
 
 def utc_now():
