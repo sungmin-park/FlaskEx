@@ -6,7 +6,7 @@ from datetime import datetime
 
 import flask
 from flask import (
-    g, request, Blueprint as Blueprint_, render_template,
+    g, request, Blueprint as Blueprint_, render_template, flash
 )
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
@@ -16,6 +16,7 @@ from pyjade.ext.jinja import PyJadeExtension
 from facebook import parse_signed_request
 from pytz import utc
 from sqlalchemy import Column, DateTime, Integer
+from wtforms.fields import HiddenField
 
 from ex import ex
 
@@ -29,6 +30,10 @@ def underscored(s):
 
 
 class ShortCuts(object):
+    def proute(self, *args, **kwargs):
+        kwargs['methods'] = ['POST']
+        return self.route(*args, **kwargs)
+
     def pgroute(self, *args, **kwargs):
         kwargs['methods'] = ['GET', 'POST']
         return self.route(*args, **kwargs)
@@ -123,6 +128,10 @@ def templated(template_or_view_func):
     return decorator
 
 
+def success(msg):
+    flash(msg, 'success')
+
+
 def url_for(*args, **kwargs):
     return flask.url_for(*args, **kwargs)
 
@@ -163,7 +172,7 @@ class SQLAlchemy(SQLAlchemy):
 
 
 def utc_now():
-    return datetime.utc_now().replace(tzinfo=utc)
+    return datetime.utcnow().replace(tzinfo=utc)
 
 
 class PKMixin(object):
@@ -182,4 +191,12 @@ class TimesMixin(object):
 
 
 class Form(wtf.Form):
-    pass
+    @property
+    def hidden_fields(self):
+        return tuple(field for field in self if isinstance(field, HiddenField))
+
+    @property
+    def fields(self):
+        return tuple(
+            field for field in self if not isinstance(field, HiddenField)
+        )

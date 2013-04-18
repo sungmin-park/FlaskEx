@@ -1,13 +1,11 @@
-mixin csstag(name, bp='')
+mixin css(name, bp='')
   link(
     rel='stylesheet', type="text/css", href=url_for(bp+'static', filename=name)
   )
 
-mixin jstag(name, bp='')
+mixin js(name, bp='')
   script(type='text/javascript', src=url_for(bp+'static', filename=name))
 
-mixin twitter_bootstrap_css()
-  +csstag('bootstrap/css/bootstrap.min.css', 'flaskex.')
-
-mixin twitter_bootstrap_js()
-  +jstag('bootstrap/js/bootstrap.min.js', 'flaskex.')
+mixin hidden_fields(form)
+  for field in form.hidden_fields
+    = field()

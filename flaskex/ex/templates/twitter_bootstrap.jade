@@ -1,0 +1,25 @@
+- import 'flaskex.jade' as ex with context
+
+mixin css()
+  = ex.css('bootstrap/css/bootstrap.min.css', 'flaskex.')
+
+mixin js()
+  = ex.js('bootstrap/js/bootstrap.min.js', 'flaskex.')
+
+mixin control_groups(form)
+  = ex.hidden_fields(form)
+  for field in form.fields
+    .control-group(class=field.errors and "error" or "")
+      = field.label(class="control-label")
+      .controls
+        = field()
+        for err in field.errors
+          span.help-inline= err
+
+mixin flashes()
+  - with flashes = get_flashed_messages(with_categories=True)
+    if flashes
+      .row
+        .span12
+          for category, message in flashes
+            .alert(class="alert-#{category}")= message
