@@ -2,8 +2,9 @@ from setuptools import setup
 
 setup(
     name='FlaskEx',
-    version='0.0.16',
-    packages=['flaskex'],
+    version='0.0.17',
+    packages=['flaskex', 'flaskex.ex'],
+    include_package_data=True,
     zip_safe=False,
     install_requires=[
         'Flask', 'Flask-WTF', 'Flask-Script', 'Flask-SQLAlchemy',

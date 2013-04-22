@@ -1,0 +1,2 @@
+recursive-include flaskex/ex/templates *
+recursive-include flaskex/ex/static *
