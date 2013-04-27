@@ -16,6 +16,8 @@ from pyjade.ext.jinja import PyJadeExtension
 from facebook import parse_signed_request
 from pytz import utc
 from sqlalchemy import Column, DateTime, Integer
+from sqlalchemy.sql.expression import ClauseElement
+from sqlalchemy.sql import exists
 from wtforms.fields import HiddenField
 from werkzeug.routing import BaseConverter
 
@@ -186,6 +188,16 @@ def utc_now():
     return datetime.utcnow().replace(tzinfo=utc)
 
 
+class ShortHandMixin(object):
+    @classmethod
+    def exists(cls, clause):
+        if not isinstance(clause, ClauseElement):
+            clause = cls.id == clause
+        return bool(
+            cls.query.session.query(exists((cls.id,)).where(clause)).scalar()
+        )
+
+
 class PKMixin(object):
     id = Column(Integer, primary_key=True)
 
@@ -199,6 +211,10 @@ class TimesMixin(object):
     updated_at = Column(
         DateTime(True), default=utc_now, onupdate=utc_now
     )
+
+
+class AllMixin(PKMixin, TimesMixin, ShortHandMixin):
+    pass
 
 
 class Form(wtf.Form):
