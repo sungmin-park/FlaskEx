@@ -17,6 +17,7 @@ from facebook import parse_signed_request
 from pytz import utc
 from sqlalchemy import Column, DateTime, Integer
 from wtforms.fields import HiddenField
+from werkzeug.routing import BaseConverter
 
 from ex import ex
 
@@ -39,6 +40,14 @@ class ShortCuts(object):
         return self.route(*args, **kwargs)
 
 
+# http://stackoverflow.com/questions/5870188
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, regex):
+        super(RegexConverter, self).__init__(url_map)
+        # BaseConveter will handle other things
+        self.regex = regex
+
+
 class Flask(ShortCuts, flask.Flask):
     def __init__(self, *args, **kwargs):
         super(Flask, self).__init__(*args, **kwargs)
@@ -47,6 +56,8 @@ class Flask(ShortCuts, flask.Flask):
         self.jinja_env.pyjade.options['pretty'] = 'JADE_PRETTY' in environ
         # redist external template
         self.register_blueprint(ex)
+        # connect URL Converters
+        self.url_map.converters['re'] = RegexConverter
         # hook config.from_object
         # because some extra settings needs config
         _config_from_object = self.config.from_object
