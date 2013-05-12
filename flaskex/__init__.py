@@ -188,6 +188,10 @@ def utc_now():
     return datetime.utcnow().replace(tzinfo=utc)
 
 
+def timestamp(dt):
+    return int(dt.strftime("%s"))
+
+
 class ShortHandMixin(object):
     @classmethod
     def exists(cls, clause):
