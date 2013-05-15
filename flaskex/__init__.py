@@ -65,6 +65,7 @@ class Flask(ShortCuts, flask.Flask):
         _config_from_object = self.config.from_object
 
         def config_from_object(*args, **kwargs):
+            self.config['DEBUG'] = 'DEBUG' in environ
             _config_from_object(*args, **kwargs)
             self.config['SQLALCHEMY_ECHO'] = 'SQLALCHEMY_ECHO' in environ
             self.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = \
