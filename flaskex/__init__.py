@@ -199,7 +199,7 @@ def timestamp(dt):
     return int(dt.strftime("%s"))
 
 
-class ShortHandMixin(object):
+class ExistsMixin(object):
     @classmethod
     def exists(cls, clause):
         if not isinstance(clause, ClauseElement):
@@ -224,7 +224,7 @@ class TimesMixin(object):
     )
 
 
-class AllMixin(PKMixin, TimesMixin, ShortHandMixin):
+class AllMixin(PKMixin, TimesMixin, ExistsMixin):
     pass
 
 
