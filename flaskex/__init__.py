@@ -5,9 +5,7 @@ from functools import wraps
 from datetime import datetime
 
 import flask
-from flask import (
-    g, request, Blueprint as Blueprint_, render_template, flash
-)
+from flask import *
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
 import flask.ext.sqlalchemy
@@ -106,7 +104,7 @@ class FlaskFacebook(Flask):
                     )
 
 
-class Blueprint(ShortCuts, Blueprint_):
+class Blueprint(ShortCuts, Blueprint):
     def templated(self, template):
         # if arguments is function, act as calling with None template name
         if hasattr(template, '__call__'):
