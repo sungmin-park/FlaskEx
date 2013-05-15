@@ -82,6 +82,13 @@ class Flask(ShortCuts, flask.Flask):
             return True
         return super(Flask, self).select_jinja_autoescape(filename)
 
+    def with_context(self, func):
+        @wraps(func)
+        def _func(*args, **kwargs):
+            with self.app_context():
+                return func(*args, **kwargs)
+        return _func
+
 
 # extra Features for Facebook
 class FlaskFacebook(Flask):

@@ -2,12 +2,12 @@ from setuptools import setup
 
 setup(
     name='FlaskEx',
-    version='0.0.20',
+    version='0.0.21',
     packages=['flaskex', 'flaskex.ex'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Flask', 'Flask-WTF', 'Flask-Script', 'Flask-SQLAlchemy',
+        'Flask', 'Flask-WTF', 'Flask-Script', 'Flask-SQLAlchemy', 'alembic',
         'pyjade==2.0.1b', 'pytz', 'iso8601', 'flask-debugtoolbar',
         'facebook-sdk'
     ],
