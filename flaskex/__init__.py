@@ -151,6 +151,18 @@ def success(msg):
     flash(msg, 'success')
 
 
+def info(msg):
+    flash(msg, 'info')
+
+
+def warning(msg):
+    flash(msg, 'warning')
+
+
+def error(msg):
+    flash(msg, 'error')
+
+
 def url_for(*args, **kwargs):
     return flask.url_for(*args, **kwargs)
 
