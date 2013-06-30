@@ -2,14 +2,14 @@ from setuptools import setup
 
 setup(
     name='FlaskEx',
-    version='0.0.28',
+    version='0.0.29',
     packages=['flaskex', 'flaskex.ex'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         'Flask', 'Flask-WTF', 'Flask-Script', 'Flask-SQLAlchemy', 'alembic',
         'pyjade==2.0.1b', 'pytz', 'iso8601', 'flask-debugtoolbar',
-        'facebook-sdk'
+        'facebook-sdk', 'glob2'
     ],
     # supporting jinja autoescape
     dependency_links=[

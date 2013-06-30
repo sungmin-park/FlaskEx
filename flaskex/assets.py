@@ -2,6 +2,8 @@ from webassets.filter import Filter
 from webassets.exceptions import FilterError
 from webassets import Bundle
 from subprocess import Popen, PIPE
+from glob2 import glob
+from os import path
 
 
 class IcedCoffeescript(Filter):
@@ -33,3 +35,7 @@ class IcedCoffeescript(Filter):
                 )
             )
         return Bundle(*li)
+
+
+def find_all_images(app):
+    return tuple(glob(path.join(app.static_folder, 'img', '*')))
