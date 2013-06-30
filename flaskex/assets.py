@@ -9,8 +9,8 @@ class IcedCoffeescript(Filter):
     max_debug_level = None
 
     def output(self, _in, out, **kw):
-        args = "-sp -l inline"
-        proc = Popen(['iced', args], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        args = ['iced', '-sp', '--runtime', 'inline']
+        proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         stdout, stderr = proc.communicate(_in.read().encode('utf-8'))
         if proc.returncode != 0:
             raise FilterError(
