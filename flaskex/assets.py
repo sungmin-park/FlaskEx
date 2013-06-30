@@ -1,5 +1,6 @@
 from webassets.filter import Filter
 from webassets.exceptions import FilterError
+from webassets import Bundle
 from subprocess import Popen, PIPE
 
 
@@ -21,3 +22,14 @@ class IcedCoffeescript(Filter):
         elif stderr:
             print("coffeescript filter has warnings:", stderr)
         out.write(stdout.decode('utf-8'))
+
+    @classmethod
+    def bundles(cls, *sources):
+        li = []
+        for i in sources:
+            li.append(
+                Bundle(
+                    "js/%s.iced" % i, output="built/%s.js" % i, filters=[cls]
+                )
+            )
+        return Bundle(*li)
