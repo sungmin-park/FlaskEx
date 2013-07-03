@@ -18,6 +18,7 @@ from sqlalchemy.sql import exists
 from wtforms.fields import HiddenField
 from werkzeug.routing import BaseConverter
 from .ex import ex
+from .assets import img_for
 
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
@@ -59,6 +60,10 @@ class Flask(ShortCuts, flask.Flask):
         # hook config.from_object
         # because some extra settings needs config
         _config_from_object = self.config.from_object
+
+        @self.context_processor
+        def context_processor():
+            return dict(img_for=img_for)
 
         def config_from_object(*args, **kwargs):
             self.config['DEBUG'] = 'DEBUG' in environ

@@ -9,6 +9,7 @@ from webassets.filter import get_filter
 from urlparse import urlparse
 from .hashlibs import md5sum
 from .shell import copyp
+from flask import url_for
 
 
 class IcedCoffeescript(Filter):
@@ -61,3 +62,15 @@ cssrewrite = get_filter('cssrewrite', replace=cssrewrite_replace)
 
 def find_all_images(app):
     return tuple(glob(path.join(app.static_folder, 'img', '*')))
+
+
+def img_for(name):
+    app = current_app
+    src_path = path.join(app.static_folder, 'img', name)
+    name, ext = path.splitext(name)
+    version = md5sum(src_path)
+    versioned_name = "%s_%s%s" % (name, version, ext)
+    relative_built_path = path.join('built', 'img', versioned_name)
+    built_path = path.join(app.static_folder, relative_built_path)
+    copyp(src_path, built_path)
+    return url_for('static', filename=relative_built_path)
