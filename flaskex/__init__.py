@@ -1,10 +1,10 @@
 import re
-from os import environ, path
+from os import environ
 from logging import StreamHandler, INFO
 from functools import wraps
 from datetime import datetime
 import flask
-from flask import request, g, Blueprint, render_template, flash, current_app
+from flask import request, g, Blueprint, render_template, flash
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
 import flask.ext.sqlalchemy
@@ -17,10 +17,7 @@ from sqlalchemy.sql.expression import ClauseElement
 from sqlalchemy.sql import exists
 from wtforms.fields import HiddenField
 from werkzeug.routing import BaseConverter
-from webassets.filter import get_filter
 from .ex import ex
-from .hashlibs import md5sum
-from .shell import copyp
 
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
@@ -250,16 +247,3 @@ class Form(wtf.Form):
         return tuple(
             field for field in self if not isinstance(field, HiddenField)
         )
-
-
-def cssrewrite_replace(url):
-    app = current_app
-    src = path.join(app.static_folder, 'img', url)
-    version = md5sum(src)
-    name, ext = path.splitext(url)
-    name = "built/img/%s_%s%s" % (name, version, ext)
-    dest = path.join(app.static_folder, name)
-    copyp(src, dest)
-    return '/static/' + name
-
-cssrewrite = get_filter('cssrewrite', replace=cssrewrite_replace)

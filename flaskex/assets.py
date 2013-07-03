@@ -4,6 +4,11 @@ from webassets import Bundle
 from subprocess import Popen, PIPE
 from glob2 import glob
 from os import path
+from flask import current_app
+from webassets.filter import get_filter
+from urlparse import urlparse
+from .hashlibs import md5sum
+from .shell import copyp
 
 
 class IcedCoffeescript(Filter):
@@ -35,6 +40,23 @@ class IcedCoffeescript(Filter):
                 )
             )
         return Bundle(*li)
+
+
+def cssrewrite_replace(url):
+    app = current_app
+    if url[0] == '/':
+        url = url[1:]
+    else:
+        url = path.join('img', url)
+    src = path.join(app.static_folder, url)
+    version = md5sum(urlparse(src).path)
+    name, ext = path.splitext(url)
+    name = path.join("built", "%s_%s%s" % (name, version, ext))
+    dest = path.join(app.static_folder, name)
+    copyp(urlparse(src).path, urlparse(dest).path)
+    return '/static/' + name
+
+cssrewrite = get_filter('cssrewrite', replace=cssrewrite_replace)
 
 
 def find_all_images(app):
