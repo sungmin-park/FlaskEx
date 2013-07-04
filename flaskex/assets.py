@@ -10,6 +10,9 @@ from urlparse import urlparse
 from .hashlibs import md5sum
 from .shell import copyp
 from flask import url_for
+from flask.json import dumps
+from . import io
+from .shell import ensure_exists
 
 
 class IcedCoffeescript(Filter):
@@ -64,7 +67,7 @@ def find_all_images(app):
     return tuple(glob(path.join(app.static_folder, 'img', '*')))
 
 
-def img_for(name):
+def tag_version(name):
     app = current_app
     src_path = path.join(app.static_folder, 'img', name)
     name, ext = path.splitext(name)
@@ -73,4 +76,25 @@ def img_for(name):
     relative_built_path = path.join('built', 'img', versioned_name)
     built_path = path.join(app.static_folder, relative_built_path)
     copyp(src_path, built_path)
+    return relative_built_path
+
+
+def img_for(name):
+    app = current_app
+    if app.debug:
+        relative_built_path = tag_version(name)
+    else:
+        relative_built_path = app.assets[name]
     return url_for('static', filename=relative_built_path)
+
+
+def build_images():
+    assets = dict()
+    app = current_app
+    img_folder = path.join(app.static_folder, 'img')
+    sources = map(lambda x: x[len(img_folder) + 1:], glob(img_folder + '/*'))
+    for source in sources:
+        assets[source] = tag_version(source)
+    assets_json = path.join(app.built_folder, 'assets.json')
+    ensure_exists(assets_json)
+    io.write(assets_json, dumps(assets))

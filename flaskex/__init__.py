@@ -1,10 +1,11 @@
 import re
-from os import environ
+from os import environ, path
 from logging import StreamHandler, INFO
 from functools import wraps
 from datetime import datetime
 import flask
 from flask import request, g, Blueprint, render_template, flash
+from flask.json import loads
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
 import flask.ext.sqlalchemy
@@ -19,6 +20,7 @@ from wtforms.fields import HiddenField
 from werkzeug.routing import BaseConverter
 from .ex import ex
 from .assets import img_for
+from . import io
 
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
@@ -76,6 +78,9 @@ class Flask(ShortCuts, flask.Flask):
             else:
                 self.logger.addHandler(StreamHandler())
                 self.logger.setLevel(INFO)
+                assets_json = path.join(self.built_folder, 'assets.json')
+                if path.exists(assets_json):
+                    self.assets = loads(io.read(assets_json))
         self.config.from_object = config_from_object
 
     # auto escape jade files too
@@ -90,6 +95,10 @@ class Flask(ShortCuts, flask.Flask):
             with self.app_context():
                 return func(*args, **kwargs)
         return _func
+
+    @property
+    def built_folder(self):
+        return path.join(self.static_folder, 'built')
 
 
 # extra Features for Facebook

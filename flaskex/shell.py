@@ -3,7 +3,10 @@ from os import path, makedirs
 
 
 def copyp(src, dst):
-    parent_directory = path.dirname(dst)
-    if not path.exists(parent_directory):
-        makedirs(parent_directory)
+    ensure_exists(path.dirname(dst))
     return copy(src, dst)
+
+
+def ensure_exists(target):
+    if not path.exists(target):
+        makedirs(target)
