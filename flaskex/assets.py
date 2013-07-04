@@ -96,5 +96,5 @@ def build_images():
     for source in sources:
         assets[source] = tag_version(source)
     assets_json = path.join(app.built_folder, 'assets.json')
-    ensure_exists(assets_json)
+    ensure_exists(app.built_folder)
     io.write(assets_json, dumps(assets))
