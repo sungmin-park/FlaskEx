@@ -5,7 +5,7 @@ from functools import wraps
 from datetime import datetime
 import flask
 from flask import request, g, Blueprint, render_template, flash
-from flask.json import loads
+from simplejson import loads
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
 import flask.ext.sqlalchemy

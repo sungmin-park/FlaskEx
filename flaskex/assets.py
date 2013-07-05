@@ -10,7 +10,7 @@ from urlparse import urlparse
 from .hashlibs import md5sum
 from .shell import copyp
 from flask import url_for
-from flask.json import dumps
+from simplejson import dumps
 from . import io
 from .shell import ensure_exists
 
