@@ -79,13 +79,13 @@ def tag_version(name):
     return relative_built_path
 
 
-def img_for(name):
+def img_for(name, _external=True):
     app = current_app
     if app.debug:
         relative_built_path = tag_version(name)
     else:
         relative_built_path = app.assets[name]
-    return url_for('static', filename=relative_built_path)
+    return url_for('static', filename=relative_built_path, _external=_external)
 
 
 def build_images():
