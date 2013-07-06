@@ -4,7 +4,7 @@ from logging import StreamHandler, INFO
 from functools import wraps
 from datetime import datetime
 import flask
-from flask import request, g, Blueprint, render_template, flash
+from flask import request, g, Blueprint, render_template, flash, Request
 from simplejson import loads
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
@@ -49,8 +49,17 @@ class RegexConverter(BaseConverter):
         self.regex = regex
 
 
+class Request(Request):
+    @property
+    def remote_addr(self):
+        return self.environ.get(
+            'HTTP_X_FORWARDED_FOR', self.environ.get('REMOTE_ADDR')
+        )
+
+
 class Flask(ShortCuts, flask.Flask):
     def __init__(self, *args, **kwargs):
+        self.request_class = Request
         super(Flask, self).__init__(*args, **kwargs)
         # regist jade
         self.jinja_env.add_extension(PyJadeExtension)
