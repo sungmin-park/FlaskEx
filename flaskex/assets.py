@@ -92,9 +92,10 @@ def build_images():
     assets = dict()
     app = current_app
     img_folder = path.join(app.static_folder, 'img')
-    sources = map(lambda x: x[len(img_folder) + 1:], glob(img_folder + '/*'))
-    for source in sources:
-        assets[source] = tag_version(source)
+    for i in glob(img_folder + '/**'):
+        if path.isfile(i):
+            source = i[len(img_folder) + 1:]
+            assets[source] = tag_version(source)
     assets_json = path.join(app.built_folder, 'assets.json')
     ensure_exists(app.built_folder)
     io.write(assets_json, dumps(assets))
