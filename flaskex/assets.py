@@ -79,7 +79,7 @@ def tag_version(name):
     return relative_built_path
 
 
-def img_for(name, _external=True):
+def img_for(name, _external=False):
     app = current_app
     if app.debug:
         relative_built_path = tag_version(name)
