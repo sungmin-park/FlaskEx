@@ -4,7 +4,9 @@ from logging import StreamHandler, INFO
 from functools import wraps
 from datetime import datetime
 import flask
-from flask import request, g, Blueprint, render_template, flash, Request
+from flask import (
+    request, Blueprint, render_template, flash, Request, current_app
+)
 from simplejson import loads
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
@@ -55,6 +57,27 @@ class Request(Request):
         return self.environ.get(
             'HTTP_X_FORWARDED_FOR', self.environ.get('REMOTE_ADDR')
         )
+
+    @property
+    def signed_request(self):
+        if not hasattr(self, '_signed_request'):
+            signed_request = self.form.get('signed_request', None)
+            if signed_request:
+                self._signed_request = parse_signed_request(
+                    signed_request, current_app.config['FACEBOOK_SECRET']
+                )
+            else:
+                self._signed_request = None
+        return self._signed_request
+
+    @property
+    def page_liked(self):
+        if self.signed_request:
+            try:
+                return self.signed_request['page']['liked']
+            except KeyError:
+                pass
+        return False
 
 
 class Flask(ShortCuts, flask.Flask):
@@ -114,15 +137,6 @@ class Flask(ShortCuts, flask.Flask):
 class FlaskFacebook(Flask):
     def __init__(self, *args, **kwargs):
         super(FlaskFacebook, self).__init__(*args, **kwargs)
-
-        @self.before_request
-        def _before_request():
-            signed_request = request.form.get('signed_request', None)
-            if signed_request:
-                g.signed_request = \
-                    parse_signed_request(
-                        signed_request, self.config['FACEBOOK_SECRET']
-                    )
 
 
 class Blueprint(ShortCuts, Blueprint):
