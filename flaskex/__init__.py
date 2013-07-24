@@ -284,3 +284,14 @@ class Form(wtf.Form):
         return tuple(
             field for field in self if not isinstance(field, HiddenField)
         )
+
+    def dict(self, **kwargs):
+        ret = {}
+        for field in self.fields:
+            ret[field.name] = kwargs.get(field.name, field.data)
+        return ret
+
+    def url(self, endpoint=None, **kwargs):
+        if endpoint is None:
+            endpoint = request.endpoint
+        return url_for(endpoint, **self.dict(**kwargs))
