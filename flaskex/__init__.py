@@ -61,7 +61,7 @@ class Request(Request):
     @property
     def signed_request(self):
         if not hasattr(self, '_signed_request'):
-            signed_request = self.form.get('signed_request', None)
+            signed_request = self.values.get('signed_request', None)
             if signed_request:
                 self._signed_request = parse_signed_request(
                     signed_request, current_app.config['FACEBOOK_SECRET']
