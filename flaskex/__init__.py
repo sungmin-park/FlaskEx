@@ -23,6 +23,7 @@ from werkzeug.routing import BaseConverter
 from .ex import ex
 from .assets import img_for
 from . import io
+from .jinja_filters import filters
 
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
@@ -87,6 +88,7 @@ class Flask(ShortCuts, flask.Flask):
         # regist jade
         self.jinja_env.add_extension(PyJadeExtension)
         self.jinja_env.pyjade.options['pretty'] = 'JADE_PRETTY' in environ
+        self.jinja_env.filters.update(filters)
         # redist external template
         self.register_blueprint(ex)
         # connect URL Converters
@@ -284,3 +286,14 @@ class Form(wtf.Form):
         return tuple(
             field for field in self if not isinstance(field, HiddenField)
         )
+
+    def dict(self, **kwargs):
+        ret = {}
+        for field in self.fields:
+            ret[field.name] = kwargs.get(field.name, field.data)
+        return ret
+
+    def url(self, endpoint=None, **kwargs):
+        if endpoint is None:
+            endpoint = request.endpoint
+        return url_for(endpoint, **self.dict(**kwargs))
