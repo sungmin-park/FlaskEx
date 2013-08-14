@@ -24,6 +24,7 @@ from .ex import ex
 from .assets import img_for
 from . import io
 from .jinja_filters import filters
+from .sns.facebook import url_for_share
 
 _underscorer1 = re.compile(r'(.)([A-Z][a-z]+)')
 _underscorer2 = re.compile('([a-z0-9])([A-Z])')
@@ -99,7 +100,7 @@ class Flask(ShortCuts, flask.Flask):
 
         @self.context_processor
         def context_processor():
-            return dict(img_for=img_for)
+            return dict(img_for=img_for, url_for_share=url_for_share)
 
         def config_from_object(*args, **kwargs):
             self.config['DEBUG'] = 'DEBUG' in environ
