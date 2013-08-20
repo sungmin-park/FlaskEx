@@ -1,4 +1,5 @@
 import re
+import socket
 from os import environ, path
 from logging import StreamHandler, INFO
 from functools import wraps
@@ -53,12 +54,33 @@ class RegexConverter(BaseConverter):
         self.regex = regex
 
 
+def is_valid_ip_addr(addr):
+    try:
+        socket.inet_aton(addr)
+        return True
+    except socket.error:
+        return False
+
+
+def find(filter_, iterable):
+    for i in iterable:
+        if filter_(i):
+            return i
+    return None
+
+
 class Request(Request):
     @property
     def remote_addr(self):
-        return self.environ.get(
-            'HTTP_X_FORWARDED_FOR', self.environ.get('REMOTE_ADDR')
+        addr = find(
+            is_valid_ip_addr, (
+                self.environ.get('HTTP_X_FORWARDED_FOR', ''),
+                self.environ.get('REMOTE_ADDR', ''),
+            )
         )
+        if not addr:
+            addr = '127.0.0.1'
+        return addr
 
     @property
     def signed_request(self):
