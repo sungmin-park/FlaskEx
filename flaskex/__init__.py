@@ -6,7 +6,7 @@ from functools import wraps
 from datetime import datetime
 import flask
 from flask import (
-    request, Blueprint, render_template, flash, Request, current_app
+    request, Blueprint, render_template, flash, Request, current_app, jsonify
 )
 from simplejson import loads
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -225,6 +225,13 @@ def error(msg):
 
 def url_for(*args, **kwargs):
     return flask.url_for(*args, **kwargs)
+
+
+def jsoned(func):
+    @wraps(func)
+    def decorated(*args, **kwargs):
+        return jsonify(**func(*args, **kwargs))
+    return decorated
 
 # looks stupid, but it works...
 models = {}

@@ -1,4 +1,5 @@
-from flask.ext.wtf import TextField
+from wtforms.fields import TextField
+from wtforms import Form
 
 
 class TrimTextField(TextField):
@@ -6,3 +7,12 @@ class TrimTextField(TextField):
         super(TrimTextField, self).process_formdata(*args, **kwargs)
         if self.data:
             self.data = self.data.strip()
+
+
+class AjaxForm(Form):
+    def errors_to_json(self):
+        errors = {}
+        for field in self:
+            if field.errors:
+                errors[field.name] = field.errors
+        return errors
