@@ -2,8 +2,10 @@ from setuptools import setup
 
 setup(
     name='FlaskEx',
-    version='0.0.55',
-    packages=['flaskex', 'flaskex.ex', 'flaskex.sns'],
+    version='0.0.56',
+    packages=[
+        'flaskex', 'flaskex.ex', 'flaskex.ext', 'flaskex.forms', 'flaskex.sns',
+    ],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
