@@ -114,6 +114,10 @@ class Flask(ShortCuts, flask.Flask):
         self.jinja_env.filters.update(filters)
         # redist external template
         self.register_blueprint(ex)
+        node_modules = Blueprint(
+            'node_modules', __name__, static_folder=self.node_modules_folder
+        )
+        self.register_blueprint(node_modules)
         # connect URL Converters
         self.url_map.converters['re'] = RegexConverter
         # hook config.from_object
@@ -156,6 +160,14 @@ class Flask(ShortCuts, flask.Flask):
     @property
     def built_folder(self):
         return path.join(self.static_folder, 'built')
+
+    @property
+    def node_modules_folder(self):
+        return path.join(self.root_path, '..', 'node_modules')
+
+    @property
+    def node_bin_folder(self):
+        return path.join(self.node_modules_folder, '.bin')
 
 
 # extra Features for Facebook
