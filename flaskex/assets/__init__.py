@@ -7,12 +7,12 @@ from os import path
 from flask import current_app
 from webassets.filter import get_filter
 from urlparse import urlparse
-from .hashlibs import md5sum
-from .shell import copyp
+from flaskex.hashlibs import md5sum
+from flaskex.shell import copyp
 from flask import url_for
 from simplejson import dumps
-from . import io
-from .shell import ensure_exists
+from flaskex import io
+from flaskex.shell import ensure_exists
 
 
 class IcedCoffeescript(Filter):
