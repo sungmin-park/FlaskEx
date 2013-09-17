@@ -20,7 +20,7 @@ class Requirefy
 
   regist: (name, fn, ctx=window) ->
     module = exports: {}
-    @vendors[name] = module
+    @vendors[name.replace(/\/index$/, '')] = module
     fn.call(ctx, name, module, module.exports)
 
 window.requirefy = new Requirefy
