@@ -12,6 +12,8 @@ class Requirefy
         lib = @vendors[location]
         if not lib
           throw Error "Cannot find #{location}"
+        if _.isFunction lib
+          lib = @vendors[location] = lib()
         lib.exports
 
   addVendors: (vendorSets) ->
@@ -19,9 +21,10 @@ class Requirefy
       @vendors[k] = exports: window[v]
 
   regist: (name, fn, ctx=window) ->
-    module = exports: {}
-    @vendors[name.replace(/\/index$/, '')] = module
-    fn.call(ctx, name, module, module.exports)
+    @vendors[name.replace(/\/index$/, '')] = ->
+      module = exports: {}
+      fn.call(ctx, name, module, module.exports)
+      module
 
 window.requirefy = new Requirefy
 window.require = window.requirefy.require
