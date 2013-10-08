@@ -177,6 +177,12 @@ class FlaskFacebook(Flask):
 
 
 class Blueprint(ShortCuts, Blueprint):
+    def jsoned(self, f):
+        @wraps(f)
+        def _jsoned(*args, **kwargs):
+            return flask.jsonify(**f(*args, **kwargs))
+        return _jsoned
+
     def templated(self, template):
         # if arguments is function, act as calling with None template name
         if hasattr(template, '__call__'):
