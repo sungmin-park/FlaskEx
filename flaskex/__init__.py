@@ -6,7 +6,7 @@ from functools import wraps
 from datetime import datetime
 import flask
 from flask import (
-    request, Blueprint, render_template, flash, Request, current_app, jsonify
+    request, render_template, flash, Request, current_app, jsonify
 )
 from flask.app import Environment
 from simplejson import loads
@@ -177,7 +177,7 @@ class FlaskFacebook(Flask):
         super(FlaskFacebook, self).__init__(*args, **kwargs)
 
 
-class Blueprint(ShortCuts, Blueprint):
+class Blueprint(ShortCuts, flask.Blueprint):
     def jsoned(self, f):
         @wraps(f)
         def _jsoned(*args, **kwargs):
