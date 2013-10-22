@@ -8,6 +8,7 @@ import flask
 from flask import (
     request, Blueprint, render_template, flash, Request, current_app, jsonify
 )
+from flask.app import Environment
 from simplejson import loads
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext import wtf
@@ -223,6 +224,17 @@ def templated(template_or_view_func):
             return render_template(template_name, **ctx)
         return decorated_function
     return decorator
+
+
+# http://stackoverflow.com/questions/8512677/
+# how-to-include-a-template-with-relative-path-in-jinja2
+class RelEnvironment(Environment):
+    """Override join_path() to enable relative template paths."""
+
+    def join_path(self, template, parent):
+        return path.normpath(path.join(path.dirname(parent), template))
+
+flask.app.Environment = RelEnvironment
 
 
 def success(msg):
