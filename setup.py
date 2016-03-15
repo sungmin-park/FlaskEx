@@ -3,6 +3,7 @@ from setuptools import setup
 setup(
     name='FlaskEx',
     version='0.0.66',
+    description='Predefined help libraries for Flask',
     packages=[
         'flaskex', 'flaskex.ex', 'flaskex.ext', 'flaskex.forms', 'flaskex.sns',
         'flaskex.assets'
